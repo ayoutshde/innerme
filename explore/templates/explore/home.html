@@ -1,0 +1,20 @@
+{% extends 'explore/base.html' %}{% load static %}
+{% block content %}
+<section class="hero split lavender">
+<div><p class="eyebrow">Өөрийнхөө тухай шинэ нэг зүйл</p><h1>Өөрийгөө ойлгох<br>жижиг алхам.</h1>
+<p class="lead">Зан төлөвөө сонирхож, мэдрэмжээ анзаарч, өөртөө цаг гаргаарай.</p>
+<div class="actions"><a class="button primary" href="{% url 'explore:quiz' %}">Тест эхлүүлэх <img src="{% static 'explore/art/b4c99.svg' %}" alt=""></a><a class="button" href="{% url 'explore:mood' %}">Мэдрэмжээ тэмдэглэх</a></div>
+<small>12 асуулт · Ойролцоогоор 4 минут · Зөв, буруу хариултгүй</small></div>
+<figure class="hero-figure"><div class="portrait" aria-hidden="true"><i class="shoulder"></i><i class="face"></i><img class="p1" src="{% static 'explore/art/bbce9.svg' %}" alt=""><span class="shine">✦</span><img class="p2" src="{% static 'explore/art/ae9b1.svg' %}" alt=""><img class="p3" src="{% static 'explore/art/95541.svg' %}" alt=""><img class="p4" src="{% static 'explore/art/f4cd4.svg' %}" alt=""><img class="p5" src="{% static 'explore/art/b9419.svg' %}" alt=""><img class="p6" src="{% static 'explore/art/465ca.svg' %}" alt=""><img class="p7" src="{% static 'explore/art/812b7.svg' %}" alt=""><img class="p8" src="{% static 'explore/art/e2d99.svg' %}" alt=""><img class="p9" src="{% static 'explore/art/7b28d.svg' %}" alt=""><img class="p10" src="{% static 'explore/art/adde9.svg' %}" alt=""></div><figcaption>Чи нэг л тодорхойлолтоос илүү.</figcaption></figure>
+</section>
+<section><h2>Өөрөөсөө эхлэх гурван зам</h2><div class="grid three">
+<article class="card lavender"><img src="{% static 'explore/art/2e6d8.svg' %}" alt=""><h3>Зан төлөвөө тань</h3><p>Шийдвэр гаргах, суралцах, хүмүүстэй холбогдох өөрийн хандлагыг сонирхоорой.</p><a class="link" href="{% url 'explore:quiz' %}">Тесттэй танилцах →</a></article>
+<article class="card cream"><img src="{% static 'explore/art/241a1.svg' %}" alt=""><h3>Ордоо сонирх</h3><p>Оддын тухай соёл, бэлгэдлийг хөнгөн сониуч зангаар нээгээрэй.</p><a class="link" href="{% url 'explore:zodiac' %}">Ордуудыг үзэх →</a></article>
+<article class="card mint"><img src="{% static 'explore/art/81f7a.svg' %}" alt=""><h3>Мэдрэмжээ анзаар</h3><p>Өнөөдрийн мэдрэмж, жижиг мөчүүдээ үгээр үлдээгээрэй.</p><a class="link" href="{% url 'explore:mood' %}">Тэмдэглэл бичих →</a></article></div></section>
+<section><h2>Хэрхэн ашиглах вэ?</h2><div class="grid three steps">
+<div><span>01</span><div><strong>Сониуч бай</strong><p>Тухайн мөчид өөрт ойр санагдсан хариултаа сонго.</p></div></div>
+<div><span>02</span><div><strong>Эргэцүүлж унш</strong><p>Үр дүнг шошго биш, өөрийгөө харах нэг өнцөг гэж үз.</p></div></div>
+<div><span>03</span><div><strong>Өдөрт түр саат</strong><p>Мэдрэмжээ анзаарч, нэг өгүүлбэр ч болов тэмдэглэ.</p></div></div></div></section>
+<section><h2>Нэг ертөнц, олон хандлага</h2><div class="grid four">{% for profile in featured %}{% include 'explore/type_card.html' %}{% endfor %}</div><div class="actions"><a class="button" href="{% url 'explore:types' %}">Бүх төрлийг үзэх →</a></div></section>
+<section class="hero mint split checkin"><div><p class="eyebrow">Өнөөдрийн түр зогсолт</p><h2>Яг одоо чамд ямар байна?</h2><p>Ямар ч мэдрэмж байж болно. Зүгээр л анзаарахаас эхэлье.</p></div><div><div class="mood-grid">{% for value,label,icon,art in moods %}<a class="mood-option" href="{% url 'explore:mood' %}?mood={{ value }}"><img src="{% static art %}" alt=""><span>{{ label }}</span></a>{% endfor %}</div><p><a class="link" href="{% url 'explore:mood' %}">Мэдрэмжээ тэмдэглэх →</a></p></div></section>
+{% endblock %}

@@ -1,0 +1,2 @@
+{% extends 'explore/base.html' %}{% block title %}Тэмдэглэл устгах{% endblock %}
+{% block content %}<section class="panel narrow"><h1>Тэмдэглэлийг устгах уу?</h1><p>{{ entry.day|date:"Y.m.d" }} · {{ entry.get_mood_display }}</p><form class="actions" method="post">{% csrf_token %}<button class="button destructive">Устгах</button><a class="button" href="{% url 'explore:journal' %}">Буцах</a></form></section>{% endblock %}

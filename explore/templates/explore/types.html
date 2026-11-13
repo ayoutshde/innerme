@@ -1,0 +1,8 @@
+{% extends 'explore/base.html' %}{% load static %}{% block title %}Зан төлөвийн төрлүүд{% endblock %}
+{% block content %}
+<header class="split intro"><div><p class="eyebrow">16 өнгө · Хязгааргүй онцлог</p><h1>Зан төлөвийн төрлүүд</h1><p class="lead">Бид ижил биш. Тэр нь л сонирхолтой. Өөрт ойр хандлагаа олж, бусдын ертөнцийг ч бас сонирхоорой.</p><small>Төрөл бол тайлбарлах нэг хэлбэр болохоос чиний боломжийн хязгаар биш.</small></div><img class="scene" src="{% static 'explore/art/885e3.svg' %}" alt=""></header>
+<section><form class="actions search" method="get"><label class="sr-only" for="type-search">Код, нэр эсвэл тайлбар</label><input id="type-search" name="q" type="search" value="{{ q }}" maxlength="80" placeholder="Код, нэр эсвэл тайлбараар хайх…"><button class="button primary">Хайх</button>{% if q %}<a class="button" href="{% url 'explore:types' %}">Цэвэрлэх</a>{% endif %}<span>{{ profiles|length }} төрөл</span></form>
+<div class="grid four">{% for profile in profiles %}{% include 'explore/type_card.html' %}{% empty %}<p class="notice">Тохирох төрөл олдсонгүй.</p>{% endfor %}</div></section>
+<p class="notice mint">Өөрийгөө нэг төрлөөр хязгаарлах хэрэггүй. Туршлага, сонирхол, орчин хандлагад нөлөөлж болно.</p>
+<a class="button primary" href="{% url 'explore:quiz' %}">Тест эхлүүлэх →</a>
+{% endblock %}

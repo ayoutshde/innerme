@@ -1,0 +1,15 @@
+{% extends 'explore/base.html' %}{% load static %}{% block title %}{% if entry %}Тэмдэглэл засах{% else %}Мэдрэмжээ тэмдэглэх{% endif %}{% endblock %}
+{% block content %}
+<header class="intro"><p class="eyebrow">{{ today|date:"Y.m.d" }}</p><h1>{% if entry %}Тэмдэглэл засах{% else %}Өнөөдөр ямар мэдрэмжтэй байна?{% endif %}</h1><p class="lead">Тайлбарлах албагүй. Өөрийгөө шүүхгүйгээр энэ мөчид түр саатаарай.</p></header>
+<div class="mood-layout">
+<form method="post" class="panel stack">{% csrf_token %}
+<fieldset><legend>Одоогийн мэдрэмж</legend><div class="mood-grid">{% for value,label,icon,art in moods %}<label class="mood-option"><input type="radio" name="mood" value="{{ value }}" required {% if chosen == value|stringformat:"s" %}checked{% endif %}><img src="{% static art %}" alt=""><span>{{ label }}</span></label>{% endfor %}</div>{{ form.mood.errors }}</fieldset>
+<fieldset><legend>Юу хийсэн бэ? · Заавал биш</legend><div class="actions tags">{% for tag in tags %}<label><input type="checkbox" name="tags" value="{{ tag }}" {% if tag in checked %}checked{% endif %}>{{ tag }}</label>{% endfor %}</div>{{ form.tags.errors }}</fieldset>
+<div><label for="{{ form.note.id_for_label }}">Өнөөдрийн тухай хэдэн үг… · Заавал биш</label>{{ form.note }}{{ form.note.errors }}</div>
+<div><label for="{{ form.day.id_for_label }}">Огноо</label>{{ form.day }}{{ form.day.errors }}</div>
+<div class="actions"><button class="button primary">Тэмдэглэл хадгалах ✓</button>{% if entry %}<a class="button" href="{% url 'explore:journal' %}">Буцах</a>{% endif %}</div>
+<small>Тэмдэглэл энэ браузерын сесстэй холбогдоно.</small>
+</form>
+<aside class="stack"><div class="card cream"><img class="scene" src="{% static 'explore/art/346d0.svg' %}" alt=""><h2>Өнөөдөр байгаагаараа байхад болно.</h2><p>Өдрийн жижиг мөчийг нэрлэх нь өөрийгөө сонсох нэг арга.</p></div><div class="card lavender"><p class="eyebrow">Бичих санаа хэрэгтэй юу?</p><p>Өнөөдрийн юуг дахин мэдрэхийг хүсэж байна? Юуг маргааш арай зөөлөн хүлээж авч болох вэ?</p><a class="link" href="{% url 'explore:journal' %}">Миний тэмдэглэлүүд →</a></div></aside>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'explore/base.html' %}{% load static %}{% block title %}Миний үр дүн{% endblock %}
+{% block content %}
+<section class="hero lavender split"><div><p class="eyebrow">Миний үр дүн</p><h1 class="code">{{ profile.code }}</h1><h2>{{ profile.name }}</h2><p class="lead">{{ profile.summary }}</p><small>Энэ бол өөрийгөө эргэцүүлэх нэг өнцөг.</small></div><img class="scene" src="{% static 'explore/art/09e0f.svg' %}" alt=""></section>
+<div class="result-layout"><section class="panel"><h2>Хариултын хандлага</h2>
+<div class="stack">{% for bar in bars %}<div class="axis"><div class="between"><strong>{{ bar.left }} · {{ bar.left_label }}</strong><strong>{{ bar.right }} · {{ bar.right_label }}</strong></div><meter value="{{ bar.balance }}" min="0" max="100" aria-label="{{ bar.left }} талын хувь"></meter><p>{% if bar.tied %}Тэнцүү · 50/50{% else %}{{ bar.letter }} · {{ bar.percent }}%{% endif %}</p></div>{% endfor %}</div>
+<p>Хувь нь хариултын чиглэлийг харуулна. Тэнцсэн тэнхлэгийн кодод E, N, T, J талаас сонгов.</p></section>
+<div class="stack">
+<article class="panel"><h3>Давуу талаа анзаарах</h3><p>{{ profile.summary }} Энэ хандлага ямар үед тусалж байсныг эргэн санаарай.</p></article>
+<article class="panel"><h3>Анхаарч болох зүйлс</h3><p>Хариулт бүр нөхцөлөөс хамаардаг. Үр дүнтэй нийцэхгүй санагдсан нэг жишээг бодож үзээрэй.</p></article>
+<article class="panel mint"><h3>Харилцаанд</h3><p>Өөрийн хэрэгцээг энгийнээр хэлж, нөгөө хүний өнцгийг асуух нь ойлголцолд тустай.</p></article>
+<p class="notice cream"><strong>Өөрөөсөө асуух асуулт</strong><br>Би өөртөө үнэнч байж ямар жижиг сонголт хийж болох вэ?</p>
+</div></div>
+<div class="actions"><a class="button primary" href="{% url 'explore:type_detail' profile.code %}">Төрлөө дэлгэрэнгүй үзэх</a><a class="button" href="{% url 'explore:types' %}">Бусад төрлийг үзэх</a><form method="post" action="{% url 'explore:quiz' %}">{% csrf_token %}<button class="button" name="action" value="reset">Дахин тест өгөх</button></form></div>
+{% endblock %}

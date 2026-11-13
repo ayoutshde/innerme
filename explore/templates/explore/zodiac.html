@@ -1,0 +1,14 @@
+{% extends 'explore/base.html' %}{% load static %}{% block title %}Зурхай{% endblock %}
+{% block content %}
+<section class="hero split lavender"><div><p class="eyebrow">Сонирхлын агуулга</p><h1>Ордын ертөнцтэй танилц.</h1><p class="lead">Тэнгэрийн бэлгэдлээр дамжуулан өөр нэгэн сонирхолтой түүхийг нээгээрэй. Ирээдүйг таамаглах биш, сониучлах жижиг завсарлага.</p></div><img class="scene" src="{% static 'explore/art/2f6e6.svg' %}" alt=""></section>
+<section id="finder" class="panel"><h2>Миний орд аль нь вэ?</h2>
+<div class="split"><form class="actions field-row" method="get" action="{% url 'explore:zodiac' %}#finder">
+<label>Төрсөн сар<select name="month" required><option value="">Сар</option>{% for m in months %}<option value="{{ m }}" {% if month == m|stringformat:"s" %}selected{% endif %}>{{ m }} сар</option>{% endfor %}</select></label>
+<label>Төрсөн өдөр<select name="day" required><option value="">Өдөр</option>{% for d in days %}<option value="{{ d }}" {% if day == d|stringformat:"s" %}selected{% endif %}>{{ d }}</option>{% endfor %}</select></label>
+<button class="button primary">Ордоо харах →</button></form>
+{% if sign %}<div class="notice mint"><strong>{{ sign.1 }} {{ sign.0 }}</strong><p>{{ sign.2 }} · {{ sign.3 }}</p></div>{% elif not error %}<div class="notice mint"><small>Жишээ · 5 сарын 15</small><p><strong>♉ Үхэр</strong> · 4/20–5/20</p></div>{% endif %}</div>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<small>Барууны зурхайн түгээмэл огнооны хуваарь. Зөвхөн сонирхлын зориулалттай.</small></section>
+<section><h2>Арван хоёр өөр бэлгэдэл</h2><div class="grid four">{% for name,icon,dates,description,art in signs %}<article class="card"><img src="{% static art %}" alt=""><h3>{{ name }}</h3><p>{{ dates }}</p><details><summary class="link">Дэлгэрэнгүй</summary><p>{{ description }}</p></details></article>{% endfor %}</div></section>
+<p class="notice cream">Зурхайн агуулгыг тестийн үр дүн, мэдрэмжийн тэмдэглэлтэй нэгтгэж үнэлэхгүй.</p>
+{% endblock %}

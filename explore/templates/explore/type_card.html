@@ -1,0 +1,5 @@
+{% load static %}<article class="card type-card">
+<div class="type-art {{ profile.tone }}"><div class="medallion"><img src="{% static profile.medallion %}" alt=""><img src="{% static profile.art %}" alt=""></div><img class="dot" src="{% static 'explore/art/baae4.svg' %}" alt=""></div>
+<h3><a href="{% url 'explore:type_detail' profile.code %}">{{ profile.code }}</a></h3>
+<p>{{ profile.name }}</p><a class="link" href="{% url 'explore:type_detail' profile.code %}" aria-label="{{ profile.code }} дэлгэрэнгүй">Дэлгэрэнгүй <img src="{% static 'explore/art/2cd1a.svg' %}" alt=""></a>
+</article>

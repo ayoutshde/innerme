@@ -1,0 +1,15 @@
+{% extends 'explore/base.html' %}{% block title %}Миний тэмдэглэл{% endblock %}
+{% block content %}
+<header class="intro split"><div><p class="eyebrow">Миний тэмдэглэл</p><h1>Өдөр бүрийн жижиг түүх.</h1><p class="lead">Тэр үед ямар байснаа санахад хэдхэн үг хангалттай.</p></div><a class="button primary" href="{% url 'explore:mood' %}">＋ Шинэ тэмдэглэл</a></header>
+<section class="panel lavender"><h2>Энэ долоо хоногийн өнгө</h2><div class="week">{% for cell in week %}<div class="lavender" title="{{ cell.mood }}"><span>{{ cell.label }}</span><strong>{{ cell.day|date:"j" }}</strong><span aria-label="{{ cell.mood }}">{{ cell.icon }}</span></div>{% endfor %}</div><small>Цэгтэй өдөр тэмдэглэлгүй. Нэг өдөр олон тэмдэглэл байвал сүүлчийн мэдрэмжийг харуулна.</small></section>
+<section class="stack"><h2>Тэмдэглэлүүдээ эргэн харах</h2>
+<form method="get" class="panel actions field-row"><label>Эхлэх огноо<input type="date" name="start" value="{{ start }}"></label><label>Дуусах огноо<input type="date" name="end" value="{{ end }}"></label><button class="button primary">Шүүх</button><a class="button" href="{% url 'explore:journal' %}">Цэвэрлэх</a></form>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<p>{{ entries|length }} тэмдэглэл</p>
+{% for entry in entries %}<article class="panel">
+<div class="between"><h3>{{ entry.get_mood_display }}</h3><time datetime="{{ entry.day|date:'Y-m-d' }}">{{ entry.day|date:"Y.m.d" }}</time></div>
+{% if entry.note %}<p class="note">{{ entry.note }}</p>{% endif %}{% if entry.tags %}<p class="small">{{ entry.tags|join:" · " }}</p>{% endif %}
+<div class="actions"><a class="link" href="{% url 'explore:edit' entry.pk %}">Засах</a><a class="link danger" href="{% url 'explore:delete' entry.pk %}">Устгах</a></div></article>
+{% empty %}<div class="notice mint">{% if start or end %}Сонгосон хугацаанд тэмдэглэл олдсонгүй.{% else %}Одоогоор тэмдэглэл алга. Өнөөдрийн мэдрэмжээсээ эхлээрэй.{% endif %}</div>{% endfor %}</section>
+<p class="notice cream">Өдрүүдийг харьцуулах биш, өөрийгөө сонсох. Энэ тэмдэглэл үнэлгээ эсвэл онош биш.</p>
+{% endblock %}

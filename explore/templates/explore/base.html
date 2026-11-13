@@ -1,0 +1,22 @@
+{% load static %}<!doctype html>
+<html lang="mn">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Өөрийгөө таних{% endblock %} · InnerMe</title>
+<link rel="icon" type="image/svg+xml" href="{% static 'explore/art/83a46.svg' %}">
+<link rel="stylesheet" href="{% static 'explore/style.css' %}">
+<script defer src="{% static 'explore/ui.js' %}"></script></head>
+<body>
+<a class="skip" href="#main">Агуулга руу алгасах</a>
+<header class="topbar"><div class="wrap top-inner">
+<a class="brand" href="{% url 'explore:home' %}"><img src="{% static 'explore/art/83a46.svg' %}" alt="">InnerMe</a>
+<button class="menu" type="button" aria-controls="primary-nav" aria-expanded="false"><img src="{% static 'explore/art/d02a1.svg' %}" alt=""> Цэс</button>
+<nav id="primary-nav" aria-label="Үндсэн цэс">{% for route,label in nav %}{% with target='explore:'|add:route %}<a href="{% url target %}" {% if active == route %}aria-current="page"{% endif %}>{{ label }}</a>{% endwith %}{% endfor %}</nav>
+</div></header>
+<main class="wrap flow" id="main">
+{% if messages %}<div class="notice mint" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+{% block content %}{% endblock %}
+</main>
+<footer><div class="wrap footer-grid"><div><a class="brand" href="{% url 'explore:home' %}">InnerMe</a><p>Өөрийгөө танихад төгс хариулт биш, сониуч асуулт хэрэгтэй.</p><a class="link" href="{% url 'explore:about' %}">InnerMe-ийн тухай ↗</a></div>
+<div><p class="eyebrow">Өөрийгөө судлах</p><nav aria-label="Доод цэс">{% for route,label in nav %}{% with target='explore:'|add:route %}<a href="{% url target %}">{{ label }}</a>{% endwith %}{% endfor %}</nav></div>
+<small>© 2026 InnerMe · Оюутны төсөл. Албан ёсны MBTI үнэлгээ эсвэл эмнэлгийн оношилгоо биш.</small></div></footer>
+</body></html>

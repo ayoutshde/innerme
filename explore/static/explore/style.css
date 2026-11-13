@@ -110,6 +110,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding-block:34
 .options label{min-height:49px;flex-direction:row;text-align:left;padding:10px 14px}
 .result-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.55fr);align-items:start;gap:20px}
 @media(max-width:720px){.result-layout{grid-template-columns:1fr}}
+
 .scale-ends{display:flex;justify-content:space-between;font-weight:700;font-size:.95rem;margin-top:18px}
 .scale-ends .agree{color:#2f9e6e}.scale-ends .disagree{color:var(--accent)}
 .scale{display:flex;align-items:center;justify-content:space-between;gap:clamp(6px,2vw,18px);margin-block:14px 8px}
@@ -124,3 +125,18 @@ footer{background:var(--white);border-top:1px solid var(--line);padding-block:34
 .scale label:has(:focus-visible){outline:3px solid var(--c);outline-offset:3px}
 .scale input,.scale span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);opacity:0}
 .js .quiz-form button[value="next"]{display:none}
+
+/* Зурхай, нүүр, тэмдэглэлийн нэмэлт загвар */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.facts>div{display:grid;gap:4px;border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--white)}
+.facts small{color:var(--muted)}.facts strong{font-size:1.05rem}
+.sign-card{text-decoration:none;color:inherit;transition:transform .15s}
+.sign-card:hover{transform:translateY(-3px)}
+.sign-card img{width:56px;height:56px}
+.sign-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px}
+.sign-strip a{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:8px 12px;background:var(--white);text-decoration:none;color:var(--ink);font-size:.9rem}
+.sign-strip a:hover{border-color:var(--accent);background:var(--lav)}
+.sign-strip span{color:var(--accent);font-size:1.1rem}
+.plain{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.plain li::before{content:"✦ ";color:var(--accent)}
+.panel p+p{margin-top:.7em}

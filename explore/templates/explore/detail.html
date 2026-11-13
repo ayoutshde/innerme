@@ -2,7 +2,7 @@
 {% block content %}
 <section class="hero split {{ profile.tone }}"><div><a class="link" href="{% url 'explore:types' %}">← Бүх төрөл</a><p class="eyebrow">Өөрийгөө харах нэг өнцөг</p><h1 class="code">{{ profile.code }}</h1><h2>{{ profile.name }}</h2><p class="lead">{{ profile.summary }}</p></div><img class="scene" src="{% static 'explore/art/34cab.svg' %}" alt=""></section>
 <div class="sidebar-grid"><aside class="panel"><p class="eyebrow">Энэ хуудаснаа</p><ol class="jump-list">{% for title,heading,body in sections %}<li><a href="#section-{{ forloop.counter }}">{{ title }}</a></li>{% endfor %}</ol></aside>
-<div class="stack">{% for title,heading,body in sections %}<article class="panel" id="section-{{ forloop.counter }}"><p class="eyebrow">0{{ forloop.counter }} / {{ title }}</p><h2>{{ heading }}</h2><p>{{ body }}</p></article>{% endfor %}</div></div>
+<div class="stack">{% for title,heading,body in sections %}<article class="panel" id="section-{{ forloop.counter }}"><p class="eyebrow">0{{ forloop.counter }} / {{ title }}</p><h2>{{ heading }}</h2>{{ body|linebreaks }}</article>{% endfor %}</div></div>
 <p class="notice cream">Өөртөө үлдээх асуулт: Би ямар үед өөрийнхөөрөө байж чаддаг вэ?</p>
 <section><h2>Өөр өнцгөөс сонирхох нь</h2><div class="grid three">{% for profile in related %}{% include 'explore/type_card.html' %}{% endfor %}</div></section>
 {% endblock %}

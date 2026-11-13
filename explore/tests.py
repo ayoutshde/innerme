@@ -62,3 +62,19 @@ class InnerMeFlows(TestCase):
         self.assertContains(self.client.post("/mood/",{"mood":5,"day":future}),"Ирээдүйн огноо")
         self.assertFalse(Entry.objects.exists())
         self.assertEqual(Client(enforce_csrf_checks=True).post("/mood/",{"mood":5}).status_code,403)
+
+    def test_zodiac_detail_pages_and_card_links(self):
+        r=self.client.get("/zodiac/",{"month":5,"day":15})
+        self.assertEqual(r.context["sign"][0],"Үхэр")
+        self.assertContains(r,"Захирагч гараг")
+        for index in range(12):
+            r=self.client.get("/zodiac/",{"sign":index})
+            self.assertEqual(r.status_code,200)
+            self.assertContains(r,"Элементийн зохицол")
+        self.assertIsNone(self.client.get("/zodiac/",{"sign":99}).context["sign"])
+
+    def test_result_has_detailed_sections_for_every_type(self):
+        for code in TYPES:
+            page=self.client.get(f"/types/{code}/")
+            self.assertContains(page,"Суралцах ба ажиллах хэв маяг")
+

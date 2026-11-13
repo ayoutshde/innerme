@@ -1,14 +1,42 @@
-{% extends 'explore/base.html' %}{% load static %}{% block title %}Зурхай{% endblock %}
+{% extends 'explore/base.html' %}{% load static %}{% block title %}{% if sign %}{{ sign.0 }} · Зурхай{% else %}Зурхай{% endif %}{% endblock %}
 {% block content %}
-<section class="hero split lavender"><div><p class="eyebrow">Сонирхлын агуулга</p><h1>Ордын ертөнцтэй танилц.</h1><p class="lead">Тэнгэрийн бэлгэдлээр дамжуулан өөр нэгэн сонирхолтой түүхийг нээгээрэй. Ирээдүйг таамаглах биш, сониучлах жижиг завсарлага.</p></div><img class="scene" src="{% static 'explore/art/2f6e6.svg' %}" alt=""></section>
+<section class="hero split lavender"><div><p class="eyebrow">Сонирхлын агуулга</p><h1>Ордын ертөнцтэй танилц.</h1><p class="lead">Зурхай бол олон зууны турш хүмүүс өөрсдийгөө, харилцаагаа, өдөр тутмын сонголтоо тэнгэрийн бэлгэдлээр дамжуулан ойлгохыг оролдсон соёлын түүх. Төрсөн өдрөө сонгоод ордынхоо элемент, захирагч гараг, давуу тал, харилцааны хэв маягийг уншаарай.</p></div><img class="scene" src="{% static 'explore/art/2f6e6.svg' %}" alt=""></section>
 <section id="finder" class="panel"><h2>Миний орд аль нь вэ?</h2>
-<div class="split"><form class="actions field-row" method="get" action="{% url 'explore:zodiac' %}#finder">
+<div class="split"><form class="actions field-row" method="get" action="{% url 'explore:zodiac' %}#result">
 <label>Төрсөн сар<select name="month" required><option value="">Сар</option>{% for m in months %}<option value="{{ m }}" {% if month == m|stringformat:"s" %}selected{% endif %}>{{ m }} сар</option>{% endfor %}</select></label>
 <label>Төрсөн өдөр<select name="day" required><option value="">Өдөр</option>{% for d in days %}<option value="{{ d }}" {% if day == d|stringformat:"s" %}selected{% endif %}>{{ d }}</option>{% endfor %}</select></label>
 <button class="button primary">Ордоо харах →</button></form>
-{% if sign %}<div class="notice mint"><strong>{{ sign.1 }} {{ sign.0 }}</strong><p>{{ sign.2 }} · {{ sign.3 }}</p></div>{% elif not error %}<div class="notice mint"><small>Жишээ · 5 сарын 15</small><p><strong>♉ Үхэр</strong> · 4/20–5/20</p></div>{% endif %}</div>
+{% if sign %}<div class="notice mint"><strong>{{ sign.1 }} {{ sign.0 }}</strong><p>{{ sign.2 }}</p></div>{% elif not error %}<div class="notice mint"><small>Жишээ · 5 сарын 15</small><p><strong>♉ Үхэр</strong> · 4/20–5/20</p></div>{% endif %}</div>
 {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
 <small>Барууны зурхайн түгээмэл огнооны хуваарь. Зөвхөн сонирхлын зориулалттай.</small></section>
-<section><h2>Арван хоёр өөр бэлгэдэл</h2><div class="grid four">{% for name,icon,dates,description,art in signs %}<article class="card"><img src="{% static art %}" alt=""><h3>{{ name }}</h3><p>{{ dates }}</p><details><summary class="link">Дэлгэрэнгүй</summary><p>{{ description }}</p></details></article>{% endfor %}</div></section>
+
+{% if sign %}
+<section id="result" class="stack">
+<div class="hero split {% if detail.element == 'Гал' %}cream{% elif detail.element == 'Ус' %}lavender{% else %}mint{% endif %}"><div><p class="eyebrow">Таны орд</p><h2 class="code">{{ sign.1 }} {{ sign.0 }}</h2><p class="lead">{{ detail.overview }}</p></div><img class="scene" src="{% static sign.4 %}" alt=""></div>
+<div class="facts">
+<div><small>Огноо</small><strong>{{ sign.2 }}</strong></div>
+<div><small>Элемент</small><strong>{{ detail.element }}</strong></div>
+<div><small>Чанар</small><strong>{{ detail.quality }}</strong></div>
+<div><small>Захирагч гараг</small><strong>{{ detail.planet }}</strong></div>
+</div>
+<p><small>{{ detail.element }} элемент: {% for k,d,n in elements %}{% if k == detail.element %}{{ d|lower }}{% endif %}{% endfor %}. {{ detail.quality }} чанар: {{ detail.quality_text }}.</small></p>
+<div class="grid two">
+<article class="panel"><p class="eyebrow">Давуу тал</p><p>{{ detail.strengths }}</p></article>
+<article class="panel"><p class="eyebrow">Хөгжүүлж болох тал</p><p>{{ detail.growth }}</p></article>
+<article class="panel mint"><p class="eyebrow">Харилцаа</p><p>{{ detail.relation }}</p></article>
+<article class="panel cream"><p class="eyebrow">Суралцах ба ажиллах хэв маяг</p><p>{{ detail.work }}</p></article>
+</div>
+<article class="panel"><p class="eyebrow">Элементийн зохицол</p><p>Ижил {{ detail.element|lower }} элементийн ордууд: <strong>{{ detail.harmony.same|join:", " }}</strong>. Зурхайн түгээмэл тайлбараар {{ detail.element|lower }} элемент нь {{ detail.harmony.partner|lower }} элементийн ордууд болох <strong>{{ detail.harmony.match|join:", " }}</strong> ордтой сайн зохицдог гэж үздэг.</p></article>
+<p class="notice cream"><strong>Өөрөөсөө асуух асуулт</strong><br>{{ detail.question }}</p>
+<div class="actions between"><a class="button" href="{% url 'explore:zodiac' %}?sign={{ detail.prev }}#result">← {% for i,s in signs %}{% if i == detail.prev %}{{ s.0 }}{% endif %}{% endfor %}</a><a class="button" href="{% url 'explore:zodiac' %}?sign={{ detail.next }}#result">{% for i,s in signs %}{% if i == detail.next %}{{ s.0 }}{% endif %}{% endfor %} →</a></div>
+</section>
+{% endif %}
+
+<section><h2>Арван хоёр орд</h2><p>Орд бүр дээр дарж элемент, захирагч гараг, давуу тал, харилцааны хэв маягийг дэлгэрэнгүй унших боломжтой.</p>
+<div class="grid four">{% for i,s in signs %}<a class="card sign-card" href="{% url 'explore:zodiac' %}?sign={{ i }}#result"><img src="{% static s.4 %}" alt=""><h3>{{ s.1 }} {{ s.0 }}</h3><small>{{ s.2 }}</small><p>{{ s.3 }}</p><span class="link">Дэлгэрэнгүй унших →</span></a>{% endfor %}</div></section>
+
+<section class="panel"><h2>Дөрвөн элемент</h2><p>Барууны зурхайд 12 ордыг дөрвөн элементэд хуваадаг. Элемент бүр гурван ордыг нэгтгэж, ерөнхий хэв маягийг тодорхойлдог гэж үздэг.</p>
+<div class="grid four">{% for name,desc,names in elements %}<article class="card {% cycle 'cream' 'mint' 'lavender' 'cream' %}"><h3>{{ name }}</h3><p>{{ desc }}</p><small>{{ names|join:" · " }}</small></article>{% endfor %}</div></section>
+<section class="panel"><h2>Гурван чанар</h2><div class="grid three">{% for name,text in qualities %}<article class="card"><h3>{{ name }}</h3><p>Энэ чанартай ордууд {{ text }}.</p></article>{% endfor %}</div></section>
 <p class="notice cream">Зурхайн агуулгыг тестийн үр дүн, мэдрэмжийн тэмдэглэлтэй нэгтгэж үнэлэхгүй.</p>
 {% endblock %}

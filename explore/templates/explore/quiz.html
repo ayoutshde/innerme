@@ -1,6 +1,6 @@
 {% extends 'explore/base.html' %}{% block title %}Зан төлөвийн тест{% endblock %}
 {% block content %}
-<header class="intro narrow"><p class="eyebrow">Өөрийгөө сонсох 12 асуулт</p><h1>Зан төлөвийн тест</h1><p class="lead">Төгс хариулт хайх хэрэггүй. Өдөр тутмын өөрийгөө бодоод, хамгийн ойр санагдсан сонголтоо хийгээрэй.</p></header>
+<header class="intro narrow"><p class="eyebrow">Өөрийгөө сонсох 20 асуулт</p><h1>Зан төлөвийн тест</h1><p class="lead">Төгс хариулт хайх хэрэггүй. Өдөр тутмын өөрийгөө бодоод, хамгийн ойр санагдсан сонголтоо хийгээрэй.</p></header>
 <form method="post" class="panel narrow quiz-form">{% csrf_token %}
 <div class="between"><strong>Асуулт {{ step }} / {{ total }}</strong><span>Өөрийн хурдаар</span></div>
 <progress value="{{ step }}" max="{{ total }}" aria-label="Тестийн явц"></progress>
@@ -8,6 +8,7 @@
 <fieldset><legend>{{ question }}</legend><p>Ерөнхийдөө өөрт чинь хэр ойр санагдаж байна вэ?</p>
 <div class="scale-ends"><span class="agree">Санал нийлнэ</span><span class="disagree">Санал нийлэхгүй</span></div>
 <div class="scale">{% for value,label in options %}<label title="{{ label }}"><input type="radio" name="answer" value="{{ value }}" {% if selected == value %}checked{% endif %}><span>{{ label }}</span></label>{% endfor %}</div>
+</fieldset>
 {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
 <div class="actions between"><button class="button" type="submit" name="action" value="back" {% if step == 1 %}disabled{% endif %}>← Өмнөх</button><button class="button primary" type="submit" name="action" value="next">{% if step == total %}Үр дүн харах{% else %}Дараах{% endif %} →</button></div></form>
 <p class="notice lavender narrow">Энэ тест өөрийгөө эргэцүүлэхэд зориулагдсан. Төрөл бол тогтсон шошго биш.</p>

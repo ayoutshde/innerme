@@ -10,6 +10,8 @@
 <div class="actions"><button class="button primary">Тэмдэглэл хадгалах ✓</button>{% if entry %}<a class="button" href="{% url 'explore:journal' %}">Буцах</a>{% endif %}</div>
 <small>Тэмдэглэл энэ браузерын сесстэй холбогдоно.</small>
 </form>
-<aside class="stack"><div class="card cream"><img class="scene" src="{% static 'explore/art/346d0.svg' %}" alt=""><h2>Өнөөдөр байгаагаараа байхад болно.</h2><p>Өдрийн жижиг мөчийг нэрлэх нь өөрийгөө сонсох нэг арга.</p></div><div class="card lavender"><p class="eyebrow">Бичих санаа хэрэгтэй юу?</p><p>Өнөөдрийн юуг дахин мэдрэхийг хүсэж байна? Юуг маргааш арай зөөлөн хүлээж авч болох вэ?</p><a class="link" href="{% url 'explore:journal' %}">Миний тэмдэглэлүүд →</a></div></aside>
+<aside class="stack"><div class="card cream"><img class="scene" src="{% static 'explore/art/346d0.svg' %}" alt=""><h2>Өнөөдөр байгаагаараа байхад болно.</h2><p>Өдрийн жижиг мөчийг нэрлэх нь өөрийгөө сонсох нэг арга.</p></div><div class="card lavender"><p class="eyebrow">Бичих санаа хэрэгтэй юу?</p><ul class="plain"><li>Өнөөдрийн хамгийн жижиг сайхан мөч юу байв?</li><li>Яг одоо биед минь юу мэдрэгдэж байна?</li><li>Юуг маргааш арай зөөлөн хүлээж авч болох вэ?</li><li>Намайг хэн, юу сэргээв?</li></ul></div>
+<div class="card mint"><p class="eyebrow">Яагаад тэмдэглэх вэ?</p><p>Мэдрэмжээ тогтмол тэмдэглэснээр ямар үйлдэл, хүн, орчин таныг сэргээдэг, юу ядраадгийг цаг хугацаанд нь харж болно. Нэг өдрийн мэдрэмж бол зөвхөн тэр өдрийнх, тогтсон шошго биш.</p><a class="link" href="{% url 'explore:journal' %}">Миний тэмдэглэлүүд →</a></div>
+</aside>
 </div>
 {% endblock %}

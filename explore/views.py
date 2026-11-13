@@ -5,7 +5,8 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import localdate
 from django.views.decorators.http import require_http_methods, require_safe
-from .data import INFP_SECTIONS, MOODS, MOOD_ART, OPTIONS, QUESTIONS, SIGNS, TAGS, TYPES, score
+from collections import Counter
+from .data import ELEMENTS, INFP_SECTIONS, QUALITIES, SIGN_DETAILS, build_sections, sign_harmony, MOODS, MOOD_ART, OPTIONS, QUESTIONS, SIGNS, TAGS, TYPES, score
 from .forms import EntryForm
 from .models import Entry
 
@@ -17,7 +18,7 @@ def page(request, template, active, **context):
 
 @require_safe
 def home(request):
-    return page(request,"home","home",featured=[TYPES[c] for c in ("INFP","ENFP","INTJ","ISFJ")], moods=MOOD_ART)
+    return page(request,"home","home",featured=[TYPES[c] for c in ("INFP","ENFP","INTJ","ISFJ")], moods=MOOD_ART, signs=SIGNS)
 
 @require_http_methods(["GET","HEAD","POST"])
 def quiz(request):
@@ -53,7 +54,9 @@ def result(request):
     if any(str(i) not in answers for i in range(1,len(QUESTIONS)+1)):
         return redirect("explore:quiz")
     code, bars = score([answers[str(i)] for i in range(1,len(QUESTIONS)+1)])
-    return page(request,"result","quiz",profile=TYPES[code],bars=bars)
+    sections = INFP_SECTIONS if code == "INFP" else build_sections(code)
+    return page(request,"result","quiz",profile=TYPES[code],bars=bars,sections=sections,
+                tied=sum(b["tied"] for b in bars))
 
 @require_safe
 def types(request):
@@ -66,28 +69,14 @@ def type_detail(request,code):
     profile = TYPES.get(code.upper())
     if not profile:
         raise Http404("Төрөл олдсонгүй.")
-    advice = {
-      "E":"Санаагаа ярилцаад, дараа нь өөрийн бодлыг тусад нь тэмдэглээд үзээрэй.",
-      "I":"Ганцаар бодох хугацаа гаргаад, санаагаа итгэлтэй хүнтэй хуваалцаарай.",
-      "N":"Шинэ хувилбаруудаасаа нэгийг сонгож, бодит жижиг туршилт хийгээрэй.",
-      "S":"Бодит жишээн дээр тулгуурлаад, өөр нэг боломжит хувилбар төсөөлөөд үзээрэй.",
-      "T":"Шалгуураа тодорхой хэлэхийн зэрэгцээ сонголт бусдад яаж нөлөөлөхийг асуугаарай.",
-      "F":"Хүмүүсийн хэрэгцээг анзаарахын зэрэгцээ шийдвэрийн шалгуураа бичээд үзээрэй.",
-      "J":"Дараагийн алхмаа төлөвлөөд, өөрчлөлтөд багахан зай үлдээгээрэй.",
-      "P":"Уян хатан байдлаа хадгалж, эхлэх нэг хугацаа товлоод үзээрэй.",
-    }
-    sections = INFP_SECTIONS if profile["code"] == "INFP" else [
-        ("Ерөнхий хандлага", profile["name"], profile["summary"]),
-        *[(title, title, advice[letter]) for title,letter in zip(
-            ("Эрч хүчээ нөхөх","Мэдээллийг ойлгох","Шийдвэр гаргах","Ажлаа зохион байгуулах"),profile["code"])],
-    ]
+    sections = INFP_SECTIONS if profile["code"] == "INFP" else build_sections(profile["code"])
     return page(request,"detail","types",profile=profile,sections=sections,
                 related=[t for t in TYPES.values() if t!=profile and sum(a!=b for a,b in zip(t["code"],profile["code"]))==1][:3])
 
 @require_safe
 def zodiac(request):
     month,day=request.GET.get("month",""),request.GET.get("day","")
-    sign=error=None
+    index=error=None
     if "month" in request.GET or "day" in request.GET:
         try:
             birthday=date(2000,int(month),int(day))
@@ -97,10 +86,18 @@ def zodiac(request):
             # Month boundaries are inclusive for the sign that starts here.
             limits=(20,19,21,20,21,21,23,23,23,23,22,22)
             first=(9,10,11,0,1,2,3,4,5,6,7,8)
-            index=first[birthday.month-1]
-            sign=SIGNS[(index+int(birthday.day>=limits[birthday.month-1]))%12]
-    return page(request,"zodiac","zodiac", signs=SIGNS, sign=sign,error=error,
-                months=range(1,13),days=range(1,32),month=month,day=day)
+            index=(first[birthday.month-1]+int(birthday.day>=limits[birthday.month-1]))%12
+    elif request.GET.get("sign","").isdigit() and int(request.GET["sign"])<12:
+        index=int(request.GET["sign"])   # картнаас шууд ордыг сонгох
+    sign=SIGNS[index] if index is not None else None
+    detail=None
+    if index is not None:
+        detail={**SIGN_DETAILS[index],"harmony":sign_harmony(index),"prev":(index-1)%12,"next":(index+1)%12,
+                "quality_text":QUALITIES[SIGN_DETAILS[index]["quality"]]}
+    return page(request,"zodiac","zodiac", signs=list(enumerate(SIGNS)), sign=sign, detail=detail,error=error,
+                elements=[(k,v[0],[SIGNS[i][0] for i in v[1]]) for k,v in ELEMENTS.items()],
+                qualities=QUALITIES.items(),months=range(1,13),days=range(1,32),month=month,day=day,
+                sign_names=[x[0] for x in SIGNS])
 
 def own_entries(request):
     return Entry.objects.filter(owner=request.session.get("journal_owner")) if request.session.get("journal_owner") else Entry.objects.none()
@@ -154,7 +151,13 @@ def journal(request):
         day=monday+timedelta(days=i)
         value=mood_by_day.get(day)
         week.append({"label":label,"day":day,"icon":icons.get(value,"·"),"mood":labels.get(value,"Тэмдэглэлгүй")})
-    return page(request,"journal","journal",entries=entries,start=start,end=end,week=week,error=error)
+    summary=None
+    if entries:
+        counts=Counter(e.mood for e in entries)
+        top_value,top_count=counts.most_common(1)[0]
+        summary={"total":len(entries),"top":labels[top_value],"top_count":top_count,
+                 "average":round(sum(e.mood for e in entries)/len(entries),1)}
+    return page(request,"journal","journal",entries=entries,start=start,end=end,week=week,error=error,summary=summary)
 
 @require_http_methods(["GET","HEAD","POST"])
 def delete(request,pk):

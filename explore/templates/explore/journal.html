@@ -5,7 +5,7 @@
 <section class="stack"><h2>Тэмдэглэлүүдээ эргэн харах</h2>
 <form method="get" class="panel actions field-row"><label>Эхлэх огноо<input type="date" name="start" value="{{ start }}"></label><label>Дуусах огноо<input type="date" name="end" value="{{ end }}"></label><button class="button primary">Шүүх</button><a class="button" href="{% url 'explore:journal' %}">Цэвэрлэх</a></form>
 {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
-<p>{{ entries|length }} тэмдэглэл</p>
+{% if summary %}<div class="facts"><div><small>Тэмдэглэл</small><strong>{{ summary.total }}</strong></div><div><small>Хамгийн олон мэдрэмж</small><strong>{{ summary.top }} · {{ summary.top_count }} удаа</strong></div><div><small>Дундаж (1–5)</small><strong>{{ summary.average }}</strong></div></div>{% else %}<p>0 тэмдэглэл</p>{% endif %}
 {% for entry in entries %}<article class="panel">
 <div class="between"><h3>{{ entry.get_mood_display }}</h3><time datetime="{{ entry.day|date:'Y-m-d' }}">{{ entry.day|date:"Y.m.d" }}</time></div>
 {% if entry.note %}<p class="note">{{ entry.note }}</p>{% endif %}{% if entry.tags %}<p class="small">{{ entry.tags|join:" · " }}</p>{% endif %}

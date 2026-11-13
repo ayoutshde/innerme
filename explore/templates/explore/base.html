@@ -10,7 +10,7 @@
 <header class="topbar"><div class="wrap top-inner">
 <a class="brand" href="{% url 'explore:home' %}"><img src="{% static 'explore/art/83a46.svg' %}" alt="">InnerMe</a>
 <button class="menu" type="button" aria-controls="primary-nav" aria-expanded="false"><img src="{% static 'explore/art/d02a1.svg' %}" alt=""> Цэс</button>
-<nav id="primary-nav" aria-label="Үндсэн цэс">{% for route,label in nav %}{% with target='explore:'|add:route %}<a href="{% url target %}" {% if active == route %}aria-current="page"{% endif %}>{{ label }}</a>{% endwith %}{% endfor %}</nav>
+<nav id="primary-nav" aria-label="Үндсэн цэс">{% for route,label in nav %}{% with target='explore:'|add:route %}<a href="{% url target %}" {% if active == route %}aria-current="page"{% endif %}>{{ label }}</a>{% endwith %}{% endfor %}{% if user.is_authenticated %}<form method="post" action="{% url 'explore:logout' %}" class="logout">{% csrf_token %}<button type="submit">Гарах</button></form>{% else %}<a href="{% url 'explore:login' %}" {% if active == 'login' %}aria-current="page"{% endif %}>Нэвтрэх</a><a href="{% url 'explore:signup' %}" {% if active == 'signup' %}aria-current="page"{% endif %}>Бүртгүүлэх</a>{% endif %}</nav>
 </div></header>
 <main class="wrap flow" id="main">
 {% if messages %}<div class="notice mint" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}

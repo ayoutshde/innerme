@@ -1,8 +1,9 @@
+from django.conf import settings
 from django.db import models
 from .data import MOODS
 
 class Entry(models.Model):
-    owner = models.UUIDField(db_index=True, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="entries", null=True, editable=False)
     mood = models.PositiveSmallIntegerField(choices=[(v,label) for v,label,_ in MOODS])
     day = models.DateField()
     note = models.CharField(max_length=800, blank=True)

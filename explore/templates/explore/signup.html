@@ -1,0 +1,13 @@
+{% extends 'explore/base.html' %}{% block title %}Бүртгүүлэх{% endblock %}
+{% block content %}
+<section class="panel narrow auth stack">
+<header><p class="eyebrow">InnerMe</p><h1>Бүртгүүлэх</h1><p class="lead">Имэйл эсвэл утасны дугаараараа бүртгүүлснээр тэмдэглэлүүд тань аль ч төхөөрөмжөөс харагдана.</p></header>
+<form method="post" class="stack" novalidate>{% csrf_token %}
+<input type="hidden" name="next" value="{{ next }}">
+<div><label for="{{ form.identifier.id_for_label }}">Имэйл эсвэл утасны дугаар</label><input type="text" name="identifier" id="{{ form.identifier.id_for_label }}" value="{{ form.identifier.value|default:'' }}" autocomplete="username" placeholder="name@example.com эсвэл 99112233" required>{{ form.identifier.errors }}</div>
+<div><label for="{{ form.password1.id_for_label }}">Нууц үг</label><input type="password" name="password1" id="{{ form.password1.id_for_label }}" autocomplete="new-password" required>{{ form.password1.errors }}<small>Дор хаяж 8 тэмдэгт.</small></div>
+<div><label for="{{ form.password2.id_for_label }}">Нууц үг давтах</label><input type="password" name="password2" id="{{ form.password2.id_for_label }}" autocomplete="new-password" required>{{ form.password2.errors }}</div>
+<div class="actions"><button class="button primary">Бүртгүүлэх</button><a class="button" href="{% url 'explore:login' %}">Бүртгэлтэй юу? Нэвтрэх</a></div>
+</form>
+</section>
+{% endblock %}

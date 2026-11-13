@@ -1,13 +1,16 @@
 from datetime import date, timedelta
-from uuid import uuid4
 from django.contrib import messages
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import localdate
-from django.views.decorators.http import require_http_methods, require_safe
+from django.views.decorators.http import require_http_methods, require_POST, require_safe
 from collections import Counter
 from .data import ELEMENTS, INFP_SECTIONS, QUALITIES, SIGN_DETAILS, build_sections, sign_harmony, MOODS, MOOD_ART, OPTIONS, QUESTIONS, SIGNS, TAGS, TYPES, score
-from .forms import EntryForm
+from .forms import EntryForm, LoginForm, SignupForm
 from .models import Entry
 
 NAV = (("home","Нүүр"),("quiz","Тест"),("types","Зан төлөв"),
@@ -100,8 +103,45 @@ def zodiac(request):
                 sign_names=[x[0] for x in SIGNS])
 
 def own_entries(request):
-    return Entry.objects.filter(owner=request.session.get("journal_owner")) if request.session.get("journal_owner") else Entry.objects.none()
+    return Entry.objects.filter(user=request.user)
 
+def safe_next(request):
+    target = request.POST.get("next") or request.GET.get("next") or ""
+    ok = url_has_allowed_host_and_scheme(target, allowed_hosts={request.get_host()}, require_https=request.is_secure())
+    return target if ok else ""
+
+@require_http_methods(["GET","HEAD","POST"])
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect("explore:journal")
+    form = SignupForm(request.POST if request.method == "POST" else None)
+    if request.method == "POST" and form.is_valid():
+        try:
+            user = form.save()
+        except IntegrityError:
+            form.add_error("identifier", "Энэ имэйл эсвэл утасны дугаараар бүртгэл үүссэн байна. Нэвтэрнэ үү.")
+        else:
+            auth_login(request, user)
+            messages.success(request, "Бүртгэл амжилттай үүслээ. Тавтай морил!")
+            return redirect(safe_next(request) or "explore:journal")
+    return page(request, "signup", "signup", form=form, next=safe_next(request))
+
+@require_http_methods(["GET","HEAD","POST"])
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("explore:journal")
+    form = LoginForm(request.POST if request.method == "POST" else None, request=request)
+    if request.method == "POST" and form.is_valid():
+        auth_login(request, form.user)
+        return redirect(safe_next(request) or "explore:journal")
+    return page(request, "login", "login", form=form, next=safe_next(request))
+
+@require_POST
+def logout_view(request):
+    auth_logout(request)
+    return redirect("explore:home")
+
+@login_required
 @require_http_methods(["GET","HEAD","POST"])
 def mood(request,pk=None):
     entry = get_object_or_404(own_entries(request),pk=pk) if pk else None
@@ -110,21 +150,18 @@ def mood(request,pk=None):
         "day":today, "mood":request.GET.get("mood") if request.GET.get("mood") in {"1","2","3","4","5"} else None}
     form=EntryForm(request.POST if request.method=="POST" else None,initial=initial)
     if request.method=="POST" and form.is_valid():
-        owner=request.session.get("journal_owner")
-        if not owner:
-            owner=str(uuid4())
-            request.session["journal_owner"]=owner
         if entry:
             for field,value in form.cleaned_data.items():
                 setattr(entry,field,value)
             entry.save()
         else:
-            Entry.objects.create(owner=owner,**form.cleaned_data)
+            Entry.objects.create(user=request.user,**form.cleaned_data)
         messages.success(request,"Тэмдэглэл хадгалагдлаа.")
         return redirect("explore:journal")
     return page(request,"mood","journal" if entry else "mood",form=form,entry=entry,today=today,
                 moods=MOOD_ART,tags=TAGS,chosen=str(form["mood"].value() or ""),checked=form["tags"].value() or [])
 
+@login_required
 @require_safe
 def journal(request):
     all_entries=own_entries(request)
@@ -159,6 +196,7 @@ def journal(request):
                  "average":round(sum(e.mood for e in entries)/len(entries),1)}
     return page(request,"journal","journal",entries=entries,start=start,end=end,week=week,error=error,summary=summary)
 
+@login_required
 @require_http_methods(["GET","HEAD","POST"])
 def delete(request,pk):
     entry=get_object_or_404(own_entries(request),pk=pk)

@@ -1,0 +1,13 @@
+{% extends 'explore/base.html' %}{% block title %}Нэвтрэх{% endblock %}
+{% block content %}
+<section class="panel narrow auth stack">
+<header><p class="eyebrow">InnerMe</p><h1>Нэвтрэх</h1><p class="lead">Тэмдэглэл, мэдрэмжээ үзэхийн тулд нэвтэрнэ үү.</p></header>
+<form method="post" class="stack" novalidate>{% csrf_token %}
+<input type="hidden" name="next" value="{{ next }}">
+{{ form.non_field_errors }}
+<div><label for="{{ form.identifier.id_for_label }}">Имэйл эсвэл утасны дугаар</label><input type="text" name="identifier" id="{{ form.identifier.id_for_label }}" value="{{ form.identifier.value|default:'' }}" autocomplete="username" required>{{ form.identifier.errors }}</div>
+<div><label for="{{ form.password.id_for_label }}">Нууц үг</label><input type="password" name="password" id="{{ form.password.id_for_label }}" autocomplete="current-password" required>{{ form.password.errors }}</div>
+<div class="actions"><button class="button primary">Нэвтрэх</button><a class="button" href="{% url 'explore:signup' %}">Шинээр бүртгүүлэх</a></div>
+</form>
+</section>
+{% endblock %}

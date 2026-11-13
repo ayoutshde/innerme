@@ -140,3 +140,6 @@ footer{background:var(--white);border-top:1px solid var(--line);padding-block:34
 .plain{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .plain li::before{content:"✦ ";color:var(--accent)}
 .panel p+p{margin-top:.7em}
+
+nav .logout{margin:0}nav .logout button{min-height:44px;padding:0;border:0;background:none;color:var(--muted);font:inherit;cursor:pointer}nav .logout button:hover{color:var(--accent)}
+.auth{max-width:480px}

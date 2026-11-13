@@ -13,3 +13,10 @@ document.addEventListener("keydown", (event) => {
     menu.focus();
   }
 });
+// Quiz: choosing a circle submits the answer immediately.
+const quizForm = document.querySelector(".quiz-form");
+if (quizForm) {
+  quizForm.querySelectorAll(".scale input").forEach((input) =>
+    input.addEventListener("click", () => quizForm.requestSubmit())
+  );
+}

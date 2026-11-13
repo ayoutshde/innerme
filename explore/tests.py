@@ -22,7 +22,7 @@ class InnerMeFlows(TestCase):
         self.client.post("/test/",{"step":2,"action":"back"})
         self.assertEqual(self.client.get("/test/").context["selected"],4)
         for step,(_,direction,_) in enumerate(QUESTIONS,1):
-            r=self.client.post("/test/",{"step":step,"action":"next","answer":5 if direction==1 else 1})
+            r=self.client.post("/test/",{"step":step,"action":"next","answer":7 if direction==1 else 1})
         self.assertRedirects(r,"/test/result/")
         result=self.client.get("/test/result/")
         self.assertEqual(result.context["profile"]["code"],"ENTJ")

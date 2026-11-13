@@ -36,7 +36,7 @@ def quiz(request):
             request.session["step"] = max(1,step-1)
             return redirect("explore:quiz")
         value = request.POST.get("answer","")
-        if value in ("1","2","3","4","5"):
+        if value in ("1","2","3","4","5","6","7"):
             answers[str(step)] = int(value)
             request.session["answers"] = answers
             if step == len(QUESTIONS):
@@ -45,7 +45,7 @@ def quiz(request):
             return redirect("explore:quiz")
         error = "Дараах асуулт руу орохын өмнө хариултаа сонгоорой."
     return page(request,"quiz","quiz", step=step,total=len(QUESTIONS), question=QUESTIONS[step-1][2],
-                options=list(enumerate(OPTIONS,1)),selected=answers.get(str(step)),error=error)
+                options=list(reversed(list(enumerate(OPTIONS,1)))),selected=answers.get(str(step)),error=error)
 
 @require_safe
 def result(request):
